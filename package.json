@@ -1,0 +1,30 @@
+{
+  "name": "pokemondatabase",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EthanShengFrancis/PokemonDatabase.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/EthanShengFrancis/PokemonDatabase/issues"
+  },
+  "homepage": "https://github.com/EthanShengFrancis/PokemonDatabase#readme",
+  "dependencies": {
+    "pokemon-tcg-pocket-database": "^2.10.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
+  }
+}
