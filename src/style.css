@@ -1,0 +1,15 @@
+/* src/style.css */
+body {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  grid-template-areas: "header header" "sidebar main";
+}
+.site-header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.card-grid {
+  grid-area: main;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.card { cursor: pointer; }

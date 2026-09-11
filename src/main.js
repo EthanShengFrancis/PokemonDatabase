@@ -2,27 +2,82 @@
 import cards from "pokemon-tcg-pocket-database/dist/cards.extra.json";
 import sets from "pokemon-tcg-pocket-database/dist/sets.json";
 import rarities from "pokemon-tcg-pocket-database/dist/rarities.json";
+import cardsData from "pokemon-tcg-pocket-database/dist/cards.extra.json";
+import { Card } from "./Card.js";
+
+// This creates a container named app (Entry point into the DOM)
 
 const container = document.querySelector("#app");
 
-cards.slice(0, 10).forEach(card => {
-  const imgUrl = `https://cdn.jsdelivr.net/gh/flibustier/pokemon-tcg-pocket-database/dist/cards-by-set/${card.set}/${card.number}.webp`;
-  const el = document.createElement("div");
-  el.innerHTML = `
-    <img src="${imgUrl}" alt="${card.name}" width="150">
-    <p>${card.name} — ${card.element ?? ""} — HP ${card.health ?? "—"}</p>
-  `;
-  container.appendChild(el);
+cards.slice(0, 100).forEach(data => {
+  const card = new Card(data);
+  container.appendChild(card.render());
 });
 
 
-// src/main.js
-// const url = "https://cdn.jsdelivr.net/npm/pokemon-tcg-pocket-database/dist/cards.extra.json";
 
-// fetch(url)
-//   .then(response => response.json())
-//   .then(cards => {
-//     console.log(`Loaded ${cards.length} cards`);
-//     console.log(cards[0]); // peek at the shape of one card
-//   })
-//   .catch(error => console.error("Fetch failed:", error));
+// const container = document.querySelector("#app");
+
+// cards.slice(0, 5).forEach(card => {
+
+//     // Create the URL for the card artwork
+//     //  const imgUrl = `https://raw.githubusercontent.com/flibustier/pokemon-tcg-exchange/main/public/images/cards-by-set/${card.set}/${card.number}.webp`;
+
+//     const imgUrl =
+//         `/images/cards-by-set/${card.set}/${card.number}.webp`;
+
+//     // This creates the HTML line for the div
+//     const el = document.createElement("div");
+
+//     el.innerHTML = `
+//         <img src="${imgUrl}" alt="${card.name}" width="150">
+//         <p>${card.name} — ${card.element ?? ""} — HP ${card.health ?? "—"}</p>
+//     `;
+
+//     // Take the information (div) and add it back to the container
+//     container.appendChild(el);
+// });
+
+//import cards from "pokemon-tcg-pocket-database/dist/cards.extra.json";
+
+
+
+// // This creates a container named app (Entry point into the DOM)
+// const container = document.querySelector("#app");
+
+
+// // Get the first 10 cards
+// cards.slice(0, 10).forEach(card => {
+
+//     // Turn the card number into 3 digits
+//     // 1 becomes 001
+//     // 2 becomes 002
+//     // 10 becomes 010
+//     const cardNumber = String(card.number).padStart(3, "0");
+
+//     // Create the image URL
+//     const imgUrl =
+//         `https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/${card.set}/${card.set}_${cardNumber}_EN.webp`;
+
+
+//     // Create a div for this card
+//     const el = document.createElement("div");
+
+
+//     // Put the card information inside the div
+//     el.innerHTML = `
+//         <img 
+//             src="${imgUrl}" 
+//             alt="${card.name}" 
+//             width="150"
+//         >
+
+//         <p>
+//             ${card.name} — ${card.element ?? ""} — HP ${card.health ?? "—"}
+//         </p>
+//     `;
+
+
+//     // Add the card div to #app
+//     container.appendChild(el);
+// });
