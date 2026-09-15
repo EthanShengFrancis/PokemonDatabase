@@ -1,83 +1,80 @@
 // src/main.js
-import cards from "pokemon-tcg-pocket-database/dist/cards.extra.json";
+import { CardData } from "./CardData.js";
 import sets from "pokemon-tcg-pocket-database/dist/sets.json";
 import rarities from "pokemon-tcg-pocket-database/dist/rarities.json";
-import cardsData from "pokemon-tcg-pocket-database/dist/cards.extra.json";
-import { Card } from "./Card.js";
+import cardJson from "pokemon-tcg-pocket-database/dist/cards.extra.json";
+import "./style.css";
 
 // This creates a container named app (Entry point into the DOM)
 
 const container = document.querySelector("#app");
+const sideBar = document.querySelector("#sideBar");
+const menuButton = document.querySelector("#menu-toggle");
 
-cards.slice(0, 100).forEach(data => {
-  const card = new Card(data);
-  container.appendChild(card.render());
+const searchInput = document.querySelector("#searchInput");
+const searchButton = document.querySelector("#searchButton");
+
+// // Inbisbile in memory container you build up first then attach to page in one shot
+// const fragment = document.createDocumentFragment();
+
+
+function renderCards(list) {
+  container.innerHTML = ""; 
+  const fragment = document.createDocumentFragment();
+  list.forEach(data => {
+    const card = new CardData(data);
+    fragment.appendChild(card.render());
+  });
+  container.appendChild(fragment);
+}
+
+
+// ===============
+
+searchButton.addEventListener("click", () => {
+  //Make sure both searchInput and card name is lowercase
+  const query = searchInput.value.toLowerCase();
+  const filtered = cardJson.filter(card =>
+
+    // includes checks for substrings
+    card.name.toLowerCase().includes(query)
+  );
+  renderCards(filtered.slice(0, 20));
+})
+
+searchInput.addEventListener("input", () => {
+  //Make sure both searchInput and card name is lowercase
+  const query = searchInput.value.toLowerCase();
+  const filtered = cardJson.filter(card =>
+
+    // includes checks for substrings
+    card.name.toLowerCase().includes(query)
+  );
+  renderCards(filtered.slice(0, 20));
+})
+
+
+// Menu
+menuButton.addEventListener("click", () => {
+  sideBar.classList.toggle("hidden");
 });
 
+renderCards(cardJson.slice(0, 20));
+
+// cardJson.slice(0, 30).forEach(data => {
+//   const card = new CardData(data);
+//   fragment.appendChild(card.render());
+// });
+// container.appendChild(fragment);
 
 
-// const container = document.querySelector("#app");
 
-// cards.slice(0, 5).forEach(card => {
 
-//     // Create the URL for the card artwork
-//     //  const imgUrl = `https://raw.githubusercontent.com/flibustier/pokemon-tcg-exchange/main/public/images/cards-by-set/${card.set}/${card.number}.webp`;
 
-//     const imgUrl =
-//         `/images/cards-by-set/${card.set}/${card.number}.webp`;
 
-//     // This creates the HTML line for the div
-//     const el = document.createElement("div");
-
-//     el.innerHTML = `
-//         <img src="${imgUrl}" alt="${card.name}" width="150">
-//         <p>${card.name} — ${card.element ?? ""} — HP ${card.health ?? "—"}</p>
-//     `;
-
-//     // Take the information (div) and add it back to the container
-//     container.appendChild(el);
+// cards.slice(0, 20).forEach(data => {
+//   const card = new CardData(data);
+//   container.appendChild(card.render());
 // });
 
-//import cards from "pokemon-tcg-pocket-database/dist/cards.extra.json";
 
-
-
-// // This creates a container named app (Entry point into the DOM)
-// const container = document.querySelector("#app");
-
-
-// // Get the first 10 cards
-// cards.slice(0, 10).forEach(card => {
-
-//     // Turn the card number into 3 digits
-//     // 1 becomes 001
-//     // 2 becomes 002
-//     // 10 becomes 010
-//     const cardNumber = String(card.number).padStart(3, "0");
-
-//     // Create the image URL
-//     const imgUrl =
-//         `https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/pocket/${card.set}/${card.set}_${cardNumber}_EN.webp`;
-
-
-//     // Create a div for this card
-//     const el = document.createElement("div");
-
-
-//     // Put the card information inside the div
-//     el.innerHTML = `
-//         <img 
-//             src="${imgUrl}" 
-//             alt="${card.name}" 
-//             width="150"
-//         >
-
-//         <p>
-//             ${card.name} — ${card.element ?? ""} — HP ${card.health ?? "—"}
-//         </p>
-//     `;
-
-
-//     // Add the card div to #app
-//     container.appendChild(el);
-// });

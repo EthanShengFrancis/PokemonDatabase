@@ -1,15 +1,41 @@
-/* src/style.css */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   display: grid;
   grid-template-columns: 200px 1fr;
+  grid-template-rows: auto 1fr;
   grid-template-areas: "header header" "sidebar main";
+  height: 100vh; /* locks the page to exactly the viewport height */
 }
-.site-header { grid-area: header; }
-.sidebar { grid-area: sidebar; }
+
 .card-grid {
   grid-area: main;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
+  padding: 16px;
+  overflow-y: auto;   /* Overflow on an elemtn with fixed ehgith makes it scroll internally */
 }
 .card { cursor: pointer; }
+
+/* style.css */
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px;
+}
+
+#menu-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.sidebar.hidden {
+  display: none;
+}
