@@ -14,6 +14,8 @@ const menuButton = document.querySelector("#menu-toggle");
 const searchInput = document.querySelector("#searchInput");
 const searchButton = document.querySelector("#searchButton");
 
+const CARDS_PER_PAGE = 350;
+
 // // Inbisbile in memory container you build up first then attach to page in one shot
 // const fragment = document.createDocumentFragment();
 
@@ -39,7 +41,7 @@ searchButton.addEventListener("click", () => {
     // includes checks for substrings
     card.name.toLowerCase().includes(query)
   );
-  renderCards(filtered.slice(0, 20));
+  renderCards(filtered.slice(0, CARDS_PER_PAGE));
 })
 
 searchInput.addEventListener("input", () => {
@@ -50,7 +52,7 @@ searchInput.addEventListener("input", () => {
     // includes checks for substrings
     card.name.toLowerCase().includes(query)
   );
-  renderCards(filtered.slice(0, 20));
+  renderCards(filtered.slice(0, CARDS_PER_PAGE));
 })
 
 
@@ -59,22 +61,129 @@ menuButton.addEventListener("click", () => {
   sideBar.classList.toggle("hidden");
 });
 
-renderCards(cardJson.slice(0, 20));
 
-// cardJson.slice(0, 30).forEach(data => {
-//   const card = new CardData(data);
-//   fragment.appendChild(card.render());
-// });
-// container.appendChild(fragment);
+//===================================================================
+//Filter isnt working for the stage text and other text
 
+// Get all unique values for a specific property in our card data
+// getUniquevalues(cardJson, "rarity" would get Common, Rare, Epic)
+function getUniqueValues(data, key) {
+// data.map(...) goes through every card in the data.
+  //
+  // card[key] gets the value from the key."
+  //
+  // If key = "rarity", then card["rarity"]
 
+  const values = data.map(card => card[key]);
 
+  // Remove empty/falsy values for null and undefined
+  const validValues = values.filter(Boolean);
 
+  // Set automatically removes duplicate values.
+  const uniqueValues = new Set(validValues);
 
+  // Convert the Set back into an Array.
+  //
+  // The spread operator (...) takes all the values
+  // inside the Set and puts them into a new array.
+  const array = [...uniqueValues];
 
-// cards.slice(0, 20).forEach(data => {
-//   const card = new CardData(data);
-//   container.appendChild(card.render());
-// });
+  // Sort the values alphabetically.
+  return array.sort();
+}
+
+// Take the options as a list and create each key as a selection
+function createFilterGroup(title, options, key) {
+
+   // Create a <div> element.
+  const group = document.createElement("div");
+  // Give the div the CSS class "filter-group".
+  // We can use this class in our CSS to style the group.
+  group.className = "filter-group";
+
+   // Create a <button> element.
+  const toggle = document.createElement("button");
+    // Give the div the CSS class "filter-group".
+  // We can use this class in our CSS to style the group.
+  toggle.className = "filter-group-toggle";
+  toggle.textContent = title;
+
+  // EXpanded button
+  toggle.addEventListener("click", () => group.classList.toggle("expanded"));
+
+  // Create a <div> to hold all the checkbox options
+  const list = document.createElement("div");
+  list.className = "filter-group-options";
+
+  // Go through every option for labels in options array
+  options.forEach(option => {
+    // Create label element with HTML checkbox
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="checkbox" value="${option}" data-filter="${key}"> ${option}`;
+    list.appendChild(label);
+  });
+
+  group.append(toggle, list);
+  return group;
+}
+
+// Find the HTML element with the id="filters". (Can vbe reused)
+//
+// For example, if your HTML contains:
+// <div id="filters"></div>
+// filtersContainer will refer to that <div>.
+const filtersContainer = document.querySelector("#filters");
+filtersContainer.append(
+  createFilterGroup("Rarity", getUniqueValues(cardJson, "rarity"), "rarity"),
+  createFilterGroup("Element", getUniqueValues(cardJson, "element"), "element"),
+  createFilterGroup("Type", getUniqueValues(cardJson, "type"), "type"),
+  createFilterGroup("Stage", getUniqueValues(cardJson, "stage"), "stage")
+);
+
+function applyFilters() {
+  const query = searchInput.value.toLowerCase();
+
+  // Find every checkbox inside #filters that is currently checked.
+  // :checked is a CSS selector that means:
+  // "only elements that are currently checked"
+  const checked = document.querySelectorAll("#filters input:checked");
+  
+  // Create an empty object to store our active filters.
+  //
+  // We will eventually have something like:
+  //
+  // {
+  //   rarity: ["Rare", "Epic"],
+  //   element: ["Fire", "Water"],
+  //   type: ["Unit"]
+  // }
+  //
+  // This makes it easier to check which filters the user selected.
+  const active = {};
+  
+  // FOr each checked boxed, get the filter category
+  checked.forEach(box => {
+    const key = box.dataset.filter;
+    // ??= means:
+    // "If active[key] doesn't exist yet, create an empty array."
+    (active[key] ??= []).push(box.value);
+  });
+
+  const filtered = cardJson.filter(card => {
+    const matchesSearch = card.name.toLowerCase().includes(query);
+    const matchesFilters = Object.entries(active).every(([key, values]) =>
+      values.includes(card[key])
+    );
+    return matchesSearch && matchesFilters;
+  });
+
+  renderCards(filtered.slice(0, CARDS_PER_PAGE));
+}
+
+searchInput.addEventListener("input", applyFilters);
+filtersContainer.addEventListener("change", applyFilters);
+
+renderCards(cardJson.slice(0, CARDS_PER_PAGE));
+
 
 
