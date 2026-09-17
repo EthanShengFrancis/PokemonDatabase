@@ -79,8 +79,10 @@ function getUniqueValues(data, key) {
   // Remove empty/falsy values for null and undefined
   const validValues = values.filter(Boolean);
 
+  const lowerCaseValues = validValues.map(value => String(value).toLowerCase());
+
   // Set automatically removes duplicate values.
-  const uniqueValues = new Set(validValues);
+  const uniqueValues = new Set(lowerCaseValues);
 
   // Convert the Set back into an Array.
   //
@@ -90,6 +92,11 @@ function getUniqueValues(data, key) {
 
   // Sort the values alphabetically.
   return array.sort();
+}
+
+// Function to displayFirstLetterUpper
+function displayFirstLetterUpper(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 // Take the options as a list and create each key as a selection
@@ -119,7 +126,13 @@ function createFilterGroup(title, options, key) {
   options.forEach(option => {
     // Create label element with HTML checkbox
     const label = document.createElement("label");
-    label.innerHTML = `<input type="checkbox" value="${option}" data-filter="${key}"> ${option}`;
+
+      //Use function to create uppercase
+    const displayText = displayFirstLetterUpper(option);
+
+    label.innerHTML = `<input type="checkbox" value="${option}" data-filter="${key}"> ${displayText}`;
+
+    // The list for the DOM wants the label that also creates for the DOM (DOM to DOM)
     list.appendChild(label);
   });
 
@@ -140,40 +153,41 @@ filtersContainer.append(
   createFilterGroup("Stage", getUniqueValues(cardJson, "stage"), "stage")
 );
 
+console.log(getUniqueValues(cardJson, "rarity"));
+console.log(getUniqueValues(cardJson, "element"));
+console.log(getUniqueValues(cardJson, "type"));
+console.log(getUniqueValues(cardJson, "stage"));
+
 function applyFilters() {
   const query = searchInput.value.toLowerCase();
 
-  // Find every checkbox inside #filters that is currently checked.
-  // :checked is a CSS selector that means:
-  // "only elements that are currently checked"
   const checked = document.querySelectorAll("#filters input:checked");
-  
-  // Create an empty object to store our active filters.
-  //
-  // We will eventually have something like:
-  //
-  // {
-  //   rarity: ["Rare", "Epic"],
-  //   element: ["Fire", "Water"],
-  //   type: ["Unit"]
-  // }
-  //
-  // This makes it easier to check which filters the user selected.
+
   const active = {};
-  
-  // FOr each checked boxed, get the filter category
+
   checked.forEach(box => {
     const key = box.dataset.filter;
-    // ??= means:
-    // "If active[key] doesn't exist yet, create an empty array."
+
     (active[key] ??= []).push(box.value);
   });
 
+  console.log("Active filters:", active);
+
   const filtered = cardJson.filter(card => {
+
     const matchesSearch = card.name.toLowerCase().includes(query);
-    const matchesFilters = Object.entries(active).every(([key, values]) =>
-      values.includes(card[key])
-    );
+
+    const matchesFilters = Object.entries(active).every(([key, values]) => {
+
+      console.log("Filter key:", key);
+      console.log("Selected values:", values);
+      console.log("Card value:", card[key]);
+      console.log("Selected value type:", typeof values[0]);
+      console.log("Card value type:", typeof card[key]);
+
+      return values.includes(String(card[key]).toLowerCase());
+    });
+
     return matchesSearch && matchesFilters;
   });
 
