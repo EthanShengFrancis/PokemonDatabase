@@ -3,16 +3,35 @@ html, body {
   margin: 0;
 }
 
-body {
+/* body {
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-template-rows: auto 1fr;
   grid-template-areas: "header header" "sidebar main";
-  height: 100vh; /* locks the page to exactly the viewport height */
+  height: 100vh;
+} */
+
+ /* Simplified from a 2-column grid to a 2-row grid — there's no
+   sidebar column to reserve space for anymore. Top bar takes
+   whatever height its content needs (auto), everything else (1fr)
+   goes to the card area below it. */
+body {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;   /* lets controls drop to a second line on narrow screens
+                         instead of overflowing off the edge */
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ddd;
 }
 
 .card-grid {
-  grid-area: main;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
@@ -36,11 +55,90 @@ body {
   cursor: pointer;
 }
 
-.sidebar.hidden {
+/* Was ".sidebar.hidden" targeting a class on an <aside>.
+   Now targets the id directly, since #sideBar's role changed
+   from "the sidebar element" to "the collapsible controls group". */
+#sideBar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  flex: 1;           /* takes up remaining space next to the title */
+}
+#sideBar.hidden {
   display: none;
 }
 
+/* ============================ */
+
+
+/* Fixes the "textbox isn't the best size" issue you flagged:
+   an <input> has no real default width to speak of, so it was
+   likely rendering at the browser's tiny built-in default. */
+#searchInput {
+  flex: 1 1 200px;   /* can grow to fill space, starts around 200px */
+  max-width: 280px;  /* stops it stretching too wide when there's room */
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+#filters {
+  display: flex;      /* was implicitly vertical in the old narrow sidebar;
+                          now the filter groups sit in a row, since there's
+                          horizontal space to use in a top bar */
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+
+/* ===== Filter groups: same classes/JS as before, three CSS changes ===== */
+
 .filter-group {
+  position: relative;   /* NEW — this is the anchor point that lets each
+                            group's option list pop out as an overlay
+                            below its own button, instead of stacking
+                            in normal page flow */
+  border-bottom: none;  /* the divider line made sense stacked vertically
+                            in a sidebar; not needed in a horizontal row */
+}
+
+.filter-group-toggle {
+  width: auto;           /* was 100% — appropriate for a full-width sidebar
+                             item, wrong for a compact button in a row */
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+}
+
+.filter-group-options {
+  display: none;
+  position: absolute;    /* NEW — the key change. Without this, an expanded
+                             group would grow the top bar's height (it's in
+                             the "auto" grid row) and push the card grid
+                             down every time you open one. Absolute takes
+                             it out of that flow entirely, so it overlays
+                             on top of the card area instead. */
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  padding: 8px;
+  min-width: 160px;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 20;            /* sits above the card grid, not behind it */
+}
+.filter-group.expanded .filter-group-options {
+  display: flex;
+}
+
+/* .filter-group {
   border-bottom: 1px solid #444;
 }
 .filter-group-toggle {
@@ -60,4 +158,4 @@ body {
 }
 .filter-group.expanded .filter-group-options {
   display: flex;
-}
+} */

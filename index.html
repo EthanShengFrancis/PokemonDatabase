@@ -10,6 +10,38 @@
 
 <body>
 
+    <!-- Was <header> + a separate <aside class="sidebar">.
+         Now one single top bar div holding everything: button,
+         title, and the collapsible controls wrapper.
+         Dropped the <header> tag as you asked — a plain div is
+         fine here since it's a layout container, not page content. -->
+    <div class="topbar">
+
+        <!-- menu-toggle stays OUTSIDE #sideBar on purpose — it can't be
+             allowed to hide itself when toggling #sideBar's visibility -->
+        <button id="menu-toggle" aria-label="Toggle menu">☰</button>
+
+        <h1>TCG Pocket Card Database</h1>
+
+        <!-- This is what menu-toggle actually shows/hides now:
+             search + filters, grouped together, title stays visible always -->
+        <div id="sideBar">
+            <input type="text" id="searchInput" placeholder="Search pokemon name here">
+            <button id="searchButton">Search</button>
+            <div id="filters"></div>
+        </div>
+
+    </div>
+
+    <!-- Unchanged — still the only scrollable region -->
+    <main id="app" class="card-grid"></main>
+
+    <script type="module" src="/src/main.js"></script>
+
+</body>
+<!-- 
+<body>
+
     <header class="site-header">
     <button id="menu-toggle" aria-label="Toggle menu">☰</button>
     <h1>TCG Pocket Card Database</h1>
@@ -26,5 +58,5 @@
     <script type="module" src="/src/main.js"></script>
 
 
-</body>
+</body> -->
 </html>
