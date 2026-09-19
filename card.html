@@ -1,16 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Pokémon Cards</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Card Details</title>
 </head>
-
 <body>
+  <div class="topbar">
+     <button id="menu-toggle" aria-label="Toggle menu">☰</button>
+
+      <h1>TCG Pocket Card Database</h1>
+      <div id="sideBar">
+            <div id="backToMenu"></div>
+        </div>
+  </div>
+
   <main id="detail"></main>
+  
+  
+  <div id="navPanel"></div>
+  <div id="navBackdrop" class="hidden"></div>
+
   <script type="module" src="/src/cardpage.js"></script>
 </body>
-
 </html>
