@@ -19,10 +19,23 @@ export class CardData {
     render() {
         // Create the div element
         const el = document.createElement("div");
+        
+        let bracketText = "";
+
+        if (this.type == "pokemon"){
+            const capitalElement = this.element ? this.element.charAt(0).toUpperCase() + this.element.slice(1) : "";
+            bracketText = capitalElement;
+        } else {
+            bracketText = this.type;
+            bracketText = bracketText.charAt(0).toUpperCase() + bracketText.slice(1);
+        }
+        
+        
+
         el.className = "card";
         el.innerHTML = `
         <img src="${this.imgUrl}" alt="${this.name}" width="150">
-        <p>${this.name} — ${this.element ?? ""} — HP ${this.health ?? "—"}</p>
+        <p>${this.name} (${bracketText ?? ""}) - Rarity ${this.rarity ?? "-"}</p>
         `;
 
         // event listener — a function that waits and only runs when the user actually interacts with that specific element, rather than running immediately like the rest of your code.

@@ -22,8 +22,17 @@ const CARDS_PER_PAGE = 350;
 
 function renderCards(list) {
   container.innerHTML = ""; 
+
+  // Make a copy before sorting
+  const sortedList = [...list];
+
+  // Sort cards alphabetically by name
+  sortedList.sort((a, b) => {
+    return String(a.element).localeCompare(String(b.element));
+  });
+
   const fragment = document.createDocumentFragment();
-  list.forEach(data => {
+  sortedList.forEach(data => {
     const card = new CardData(data);
     fragment.appendChild(card.render());
   });
@@ -137,6 +146,13 @@ function createFilterGroup(title, options, key) {
   });
 
   group.append(toggle, list);
+  // Close THIS group whenever a click lands anywhere outside it
+  document.addEventListener("click", (event) => {
+    if (!group.contains(event.target)) {
+      group.classList.remove("expanded");
+    }
+  });
+
   return group;
 }
 
@@ -157,6 +173,10 @@ console.log(getUniqueValues(cardJson, "rarity"));
 console.log(getUniqueValues(cardJson, "element"));
 console.log(getUniqueValues(cardJson, "type"));
 console.log(getUniqueValues(cardJson, "stage"));
+
+
+//==============================================
+// THIS IS WHERE EVERYTHING IS SORTED
 
 function applyFilters() {
   const query = searchInput.value.toLowerCase();
@@ -197,6 +217,7 @@ function applyFilters() {
 searchInput.addEventListener("input", applyFilters);
 filtersContainer.addEventListener("change", applyFilters);
 
+console.log("Cards loaded:", cardJson.length);
 renderCards(cardJson.slice(0, CARDS_PER_PAGE));
 
 
