@@ -5,6 +5,9 @@ import rarities from "pokemon-tcg-pocket-database/dist/rarities.json";
 import cardJson from "pokemon-tcg-pocket-database/dist/cards.extra.json";
 import "./style.css";
 
+import { initNav } from "./nav.js";
+initNav();
+
 // This creates a container named app (Entry point into the DOM)
 
 const container = document.querySelector("#app");
@@ -14,7 +17,7 @@ const menuButton = document.querySelector("#menu-toggle");
 const searchInput = document.querySelector("#searchInput");
 const searchButton = document.querySelector("#searchButton");
 
-const CARDS_PER_PAGE = 350;
+const CARDS_PER_PAGE = 250;
 
 // // Inbisbile in memory container you build up first then attach to page in one shot
 // const fragment = document.createDocumentFragment();
@@ -66,9 +69,6 @@ searchInput.addEventListener("input", () => {
 
 
 // Menu
-menuButton.addEventListener("click", () => {
-  sideBar.classList.toggle("hidden");
-});
 
 
 //===================================================================
@@ -104,10 +104,13 @@ function getUniqueValues(data, key) {
 }
 
 // Function to displayFirstLetterUpper
-function displayFirstLetterUpper(value) {
+function displayFirstLetterUpper(label, value) {
+  if (label == "Rarity"){
+  return value.toUpperCase();
+  } else {
   return value.charAt(0).toUpperCase() + value.slice(1);
+  }
 }
-
 // Take the options as a list and create each key as a selection
 function createFilterGroup(title, options, key) {
 
@@ -137,7 +140,7 @@ function createFilterGroup(title, options, key) {
     const label = document.createElement("label");
 
       //Use function to create uppercase
-    const displayText = displayFirstLetterUpper(option);
+    const displayText = displayFirstLetterUpper(title, option);
 
     label.innerHTML = `<input type="checkbox" value="${option}" data-filter="${key}"> ${displayText}`;
 
@@ -166,7 +169,8 @@ filtersContainer.append(
   createFilterGroup("Rarity", getUniqueValues(cardJson, "rarity"), "rarity"),
   createFilterGroup("Element", getUniqueValues(cardJson, "element"), "element"),
   createFilterGroup("Type", getUniqueValues(cardJson, "type"), "type"),
-  createFilterGroup("Stage", getUniqueValues(cardJson, "stage"), "stage")
+  createFilterGroup("Stage", getUniqueValues(cardJson, "stage"), "stage"),
+  createFilterGroup("Set", getUniqueValues(cardJson, "set"), "set"),
 );
 
 console.log(getUniqueValues(cardJson, "rarity"));
